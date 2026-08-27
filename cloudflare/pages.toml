@@ -1,0 +1,24 @@
+# Cloudflare Pages project configuration for سازه افزار فتح (frontend Next.js site).
+# این تنظیمات معادل گزینه‌های «Manual/Git CI» یا ستون‌های تنظیمات داشبورد Pages هستند.
+# برای استفاده محلی می‌توانید `npx @cloudflare/pages-cli` یا wrangler [pages] را بکار ببرید.
+
+name = "sazehafzar-com"
+compatibility_date = "2025-01-01"
+
+[build]
+# next-on-pages، خروجی Next.js را به استاتیک + یک Worker (SSR) تبدیل می‌کند که Pages اجرا می‌کند.
+command = "npx @cloudflare/next-on-pages"
+output_dir = ".vercel/output/static"
+
+# متغیرهایی که فرانت‌اند برای ارتباط با Worker بکاند استفاده می‌کند.
+[vars]
+NEXT_PUBLIC_API_URL = "https://api.sazehafzar.com"
+NEXT_PUBLIC_SITE_URL = "https://sazehafzar.com"
+
+[env.production]
+NEXT_PUBLIC_SITE_URL = "https://sazehafzar.com"
+NEXT_PUBLIC_API_URL = "https://api.sazehafzar.com"
+
+[env.preview]
+NEXT_PUBLIC_SITE_URL = "https://preview.sazehafzar.com"
+NEXT_PUBLIC_API_URL = "https://api-preview.sazehafzar.com"

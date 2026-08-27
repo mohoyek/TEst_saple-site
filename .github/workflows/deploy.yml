@@ -1,0 +1,51 @@
+name: Deploy to Cloudflare
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+  CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+  CF_PROJECT_NAME: sazehafzar-com
+  CF_WORKER_NAME: sazeh-afzar-api
+
+jobs:
+  deploy-worker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          workingDirectory: ./cloudflare
+          command: deploy
+
+  deploy-pages:
+    needs: deploy-worker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - name: Install next-on-pages
+        run: npm i -D @cloudflare/next-on-pages
+      - name: Build for Cloudflare Pages
+        run: npx @cloudflare/next-on-pages
+      - name: Deploy to Pages
+        run: |
+          npx wrangler pages deploy .vercel/output/static \
+            --project-name=$CF_PROJECT_NAME \
+            --branch=${GITHUB_REF#refs/heads/}
+        env:
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          NEXT_PUBLIC_API_URL: https://api.sazehafzar.com
+          NEXT_PUBLIC_SITE_URL: https://sazehafzar.com

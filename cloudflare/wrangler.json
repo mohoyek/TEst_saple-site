@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json.schemastore.org/wrangler",
+  "name": "sazeh-afzar-api",
+  "description": "Cloudflare Worker used as the backend API for the سازه افزار فتح website (contact + employment forms).",
+  "main": "worker.js",
+  "compatibility_date": "2025-01-01",
+  "vars": {
+    "CONTACT_EMAIL": "info@sazehafzar.com",
+    "EMPLOYMENT_EMAIL": "info@sazehafzar.com"
+  },
+  "routes": [
+    {
+      "pattern": "api.sazehafzar.com/*",
+      "custom_key": null
+    }
+  ]
+}
